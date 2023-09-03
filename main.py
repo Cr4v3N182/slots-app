@@ -13,19 +13,20 @@ def open_window():
     with open("data.csv", "r") as file:
         data = file.readline()
         user_list = data.split(",")
-        print(user_list)
+        print(user_list[0])
 
-    player_name = sg.Text("", key='player')
-    player_cash = sg.Text("", key='p_cash')
+    player_name = sg.Text(f"Player: {user_list[0]}", key='player')
+    player_cash = sg.Text(f"Money: {user_list[1]}", key='p_cash')
     slots_result = sg.Text("", key='result')
     start_button = sg.Button("Start", key='start')
     menu_button = sg.Button("Return to main menu", key='ret_menu')
     close_button = sg.Button("Close", key='close')
 
-    layout = [[player_name], [player_cash], [slots_result], [start_button], [menu_button, close_button]]
+    layout = [[player_name, player_cash], [slots_result], [start_button], [menu_button, close_button]]
 
     window = sg.Window("Second Window", layout, modal=True)
     choice = None
+
     while True:
         event, values = window.read()
         if event == "Exit" or event == sg.WIN_CLOSED:
