@@ -1,12 +1,29 @@
+import csv
+
 import PySimpleGUI as sg
 import random
+import pandas as pd
 
 user = ""
 cash = 0
 
-# open_window function is a preset has to be changed
+# open_window function is a preset has to be changed, game window
 def open_window():
-    layout = [[sg.Text("New Window", key="new")]]
+    # geting data from data.csv and store it into a user_list
+    with open("data.csv", "r") as file:
+        data = file.readline()
+        user_list = data.split(",")
+        print(user_list)
+
+    player_name = sg.Text("", key='player')
+    player_cash = sg.Text("", key='p_cash')
+    slots_result = sg.Text("", key='result')
+    start_button = sg.Button("Start", key='start')
+    menu_button = sg.Button("Return to main menu", key='ret_menu')
+    close_button = sg.Button("Close", key='close')
+
+    layout = [[player_name], [player_cash], [slots_result], [start_button], [menu_button, close_button]]
+
     window = sg.Window("Second Window", layout, modal=True)
     choice = None
     while True:
@@ -16,8 +33,9 @@ def open_window():
 
     window.close()
 
-
+# launch window.
 def main():
+
     label = sg.Text("Enter your name and press play.")
     user_input = sg.Input("", key='user', size=(51, 20),
                           do_not_clear=False)
@@ -42,9 +60,14 @@ def main():
         event, values = launch_window.read()
         match event:
             case 'confirm':
-                user = values['user']   # get a input value
+                # get a input value
+                user = values['user']
                 cash = values['cash']
                 info_to_user.update(value=f"Hello {user} you store {cash} $")
+
+                # user and cash stored in data.csv
+                with open("data.csv", "w") as file:
+                    file.writelines(f"{user},{cash}")
             case 'play':
                 launch_window.close()
                 open_window()
@@ -52,7 +75,7 @@ def main():
                 break
             case sg.WIN_CLOSED:
                 break
-        launch_window.close()
+    launch_window.close()
 
 if __name__ == "__main__":
     main()
